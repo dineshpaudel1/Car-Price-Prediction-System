@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Car Price Prediction</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'master.css' %}" />
+    <style>
+      /* Styles remain unchanged */
+    </style>
+  </head>
+  <body>
+    <div class="mybg"></div>
+    <div class="header">
+      <h1>Car Price Prediction</h1>
+      <p>Enter car details to predict the price.</p>
+      <form method="post" action="{% url 'home' %}">
+        {% csrf_token %}
+        <button type="submit" class="logout-button">Home</button>
+      </form>
+    </div>
+
+    <div class="main-content">
+      <div class="container">
+        <div class="form-card">
+          <h2>Enter Car Details</h2>
+          <form method="post" action="{% url 'predict' %}">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="brand">Brand</label>
+              <input
+                type="text"
+                id="brand"
+                name="brand"
+                placeholder="Enter car brand"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="km_driven">Kilometers Driven</label>
+              <input
+                type="number"
+                id="km_driven"
+                name="km_driven"
+                placeholder="Enter kilometers driven"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Fuel</label>
+              <div>
+                <input
+                  type="radio"
+                  id="fuel"
+                  name="fuel_type"
+                  value="Petrol"
+                  required
+                />
+                <label for="fuel">Petrol</label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  id="diesel"
+                  name="fuel_type"
+                  value="Diesel"
+                  required
+                />
+                <label for="diesel">Diesel</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="owner">Owner Type</label>
+              <select id="owner" name="owner" required>
+                <option value="" disabled selected>Select owner type</option>
+                <option value="First Owner">First Owner</option>
+                <option value="Second Owner">Second Owner</option>
+                <option value="Third Owner">Third Owner</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Deal Type</label>
+              <div>
+                <input
+                  type="radio"
+                  id="individual"
+                  name="deal"
+                  value="Individual"
+                  required
+                />
+                <label for="individual">Individual</label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  id="dealer"
+                  name="deal"
+                  value="Dealer"
+                  required
+                />
+                <label for="dealer">Dealer</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Transmission Type</label>
+              <div>
+                <input
+                  type="radio"
+                  id="manual"
+                  name="transmission"
+                  value="Manual"
+                  required
+                />
+                <label for="manual">Manual</label>
+              </div>
+              <div>
+                <input
+                  type="radio"
+                  id="automatic"
+                  name="transmission"
+                  value="Automatic"
+                  required
+                />
+                <label for="automatic">Automatic</label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="year">Year</label>
+              <input
+                type="number"
+                id="year"
+                name="year"
+                placeholder="Enter manufacturing year"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="mileage">Mileage (km/l)</label>
+              <input
+                type="number"
+                id="mileage"
+                name="mileage"
+                placeholder="Enter mileage"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="engine_size">Engine Size (cc)</label>
+              <input
+                type="number"
+                id="engine_size"
+                name="engine_size"
+                placeholder="Enter engine size"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="power">Power (hp)</label>
+              <input
+                type="number"
+                id="power"
+                name="power"
+                placeholder="Enter car power"
+                required
+              />
+            </div>
+
+            <div class="form-group">
+              <label for="seats">Seats</label>
+              <input
+                type="number"
+                id="seats"
+                name="seats"
+                placeholder="Enter number of seats"
+                required
+              />
+            </div>
+
+            <button type="submit">Predict Price</button>
+          </form>
+
+          {% if prediction %}
+          <div class="result">
+            <h2>Predicted Price:</h2>
+            <p>{{ prediction }} USD</p>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>&copy; 2024 Your Company. All rights reserved.</p>
+    </div>
+  </body>
+</html>

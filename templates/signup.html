@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Signup Page</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to right, #2980b9, #6dd5fa, #ffffff);
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .signup-container {
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        width: 400px;
+        max-width: 80%;
+      }
+
+      .signup-header {
+        background: #2980b9;
+        color: #fff;
+        padding: 20px;
+        text-align: center;
+      }
+
+      .signup-header h2 {
+        margin: 0;
+      }
+
+      .signup-body {
+        padding: 20px;
+      }
+
+      .input-group {
+        margin-bottom: 20px;
+      }
+
+      .input-group label {
+        display: block;
+        font-weight: bold;
+      }
+
+      .input-group input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+
+      .input-group input:focus {
+        outline: none;
+        border-color: #2980b9;
+      }
+
+      .btn {
+        background: #2980b9;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: background 0.3s ease;
+      }
+
+      .btn:hover {
+        background: #2471a3;
+      }
+
+      .login-link {
+        text-align: center;
+      }
+
+      .login-link a {
+        color: #2980b9;
+        text-decoration: none;
+      }
+
+      .login-link a:hover {
+        text-decoration: underline;
+      }
+
+      .error {
+        color: red;
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="signup-container">
+      <div class="signup-header">
+        <h2>Sign Up</h2>
+      </div>
+      <div class="signup-body">
+        {% if error %}
+        <p class="error">{{ error }}</p>
+        {% endif %}
+        <form action="" method="post">
+          {% csrf_token %}
+          <div class="input-group">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              value="{{ username }}"
+              required
+            />
+          </div>
+          <div class="input-group">
+            <label for="email">Email</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value="{{ email }}"
+              required
+            />
+          </div>
+          <div class="input-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password1" required />
+          </div>
+          <div class="input-group">
+            <label for="confirm-password">Confirm Password</label>
+            <input
+              type="password"
+              id="confirm-password"
+              name="password2"
+              required
+            />
+          </div>
+          <button type="submit" class="btn">Sign Up</button>
+        </form>
+        <div class="login-link">
+          <p>Already have an account? <a href="{% url 'login' %}">Log in</a></p>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
