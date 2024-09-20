@@ -7,7 +7,7 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'master.css' %}" />
     <style>
-      /* Styles remain unchanged */
+      /* Custom styling if necessary */
     </style>
   </head>
   <body>
@@ -186,14 +186,13 @@
             </div>
 
             <button type="submit">Predict Price</button>
+            {% if prediction %}
+            <div class="result">
+              <h2>Predicted Price:</h2>
+              <p>{{ prediction }} NPR</p>
+            </div>
+            {% endif %}
           </form>
-
-          {% if prediction %}
-          <div class="result">
-            <h2>Predicted Price:</h2>
-            <p>{{ prediction }} USD</p>
-          </div>
-          {% endif %}
         </div>
       </div>
     </div>

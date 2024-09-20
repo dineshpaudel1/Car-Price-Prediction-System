@@ -1,6 +1,7 @@
 import numpy as np
 import joblib
 import os
+import re
 
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
@@ -9,11 +10,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
-
-
-model = joblib.load('app1/trained_model.pkl')
-
-
+# Load the trained model
+model = joblib.load('app1/prediction/trained_model.pkl')
 
 # Encoding functions
 def encode_owner(owner):
@@ -50,39 +48,47 @@ def encode_transmission_type(transmission_type):
     else:
         raise ValueError("Invalid transmission type. Choose 'Manual' or 'Automatic'.")
 
-# CSRF exempt for simplicity, but not recommended in production
 @csrf_exempt
 def predict_price(request):
     if request.method == 'POST':
-        # Receive data from the form
-        owner_type = request.POST.get('owner')
-        fuel_type = request.POST.get('fuel_type')
-        deal_type = request.POST.get('deal')
-        transmission_type = request.POST.get('transmission')
-        year = int(request.POST.get('year'))
-        mileage = float(request.POST.get('mileage'))
-        engine_size = float(request.POST.get('engine_size'))
-        power = float(request.POST.get('power'))
-        seats = float(request.POST.get('seats'))
-        kilometer_driven = float(request.POST.get('km_driven'))
+        try:
+            # Receive data from the form
+            owner_type = request.POST.get('owner')
+            fuel_type = request.POST.get('fuel_type')
+            deal_type = request.POST.get('deal')
+            transmission_type = request.POST.get('transmission')
+            year = int(request.POST.get('year'))
+            mileage = float(request.POST.get('mileage'))
+            engine_size = float(request.POST.get('engine_size'))
+            power = float(request.POST.get('power'))
+            seats = float(request.POST.get('seats'))
+            kilometer_driven = float(request.POST.get('km_driven'))
 
-        # Encode categorical values
-        owner = encode_owner(owner_type)
-        fuel = encode_fuel_type(fuel_type)
-        deal = encode_deal_type(deal_type)
-        transmission = encode_transmission_type(transmission_type)
+            # Encode categorical values
+            owner = encode_owner(owner_type)
+            fuel = encode_fuel_type(fuel_type)
+            deal = encode_deal_type(deal_type)
+            transmission = encode_transmission_type(transmission_type)
 
-        # Combine all features
-        input_features = owner + [year, kilometer_driven, fuel, deal, transmission, power, mileage, engine_size, seats]
+            # Combine all features
+            input_features = owner + [year, kilometer_driven, fuel, deal, transmission, power, mileage, engine_size, seats]
+            
+            # Make prediction in INR
+            predicted_price_inr = model.predict([input_features])[0]
+
+            # Convert to Nepali Rupees (NPR)
+            conversion_rate = 1.6*3  # 1 INR = 1.6 * 3 because including all taxes of nepal
+            predicted_price_npr = predicted_price_inr * conversion_rate
+
+            # Render the 'master.html' with prediction in NPR
+            return render(request, 'master.html', {'prediction': round(predicted_price_npr, 2)})
         
-        # Make prediction
-        output = model.predict([input_features])[0]
-
-        # Return prediction as JSON
-        return JsonResponse({'prediction': output})
-
-    return JsonResponse({'error': 'Invalid request method. Use POST.'})
-
+        except Exception as e:
+            # Handle error and display it on the page
+            return render(request, 'master.html', {'error': str(e)})
+    
+    # If the request method is not POST, render the form without prediction
+    return render(request, 'master.html')
 
 
 @login_required(login_url='login')
@@ -155,11 +161,8 @@ def LoginPage(request):
     return render(request, 'login.html')
 
 def master_view(request):
-    # You can add any logic here if needed
     return render(request, 'master.html')
 
 def LogoutPage(request):
     logout(request)
     return redirect('login')
-
-
